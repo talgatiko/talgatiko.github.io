@@ -19,7 +19,7 @@
 </nav>
 <main>
     <article>
-        <header><h1>{{ publication.metadata.title }}</h1><p>{{ publication.metadata.description }}</p></header>
+        <header><p>{{ publication.metadata.description }}</p></header>
         {{ publication.html | safe }}
     </article>
 </main>
