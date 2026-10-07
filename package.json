@@ -1,0 +1,116 @@
+{
+  "name": "talgaticus-site",
+  "version": "0.10.0",
+  "description": "Source and TeqCMS static export for talgatiko.github.io",
+  "type": "module",
+  "keywords": [
+    "teqfw",
+    "tequila framework",
+    "cms",
+    "mustache",
+    "ssr",
+    "localization",
+    "template engine",
+    "web"
+  ],
+  "homepage": "https://talgatiko.github.io/",
+  "bugs": {
+    "url": "https://github.com/talgatiko/talgatiko.github.io/issues"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Alex Gusev",
+    "email": "alex@flancer64.com",
+    "url": "https://github.com/flancer64"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/talgatiko/talgatiko.github.io.git"
+  },
+  "types": "types.d.ts",
+  "files": [
+    "bootstrap/",
+    "docs/",
+    "skills/",
+    "src/",
+    "tmpl/",
+    "web/",
+    "CHANGELOG.md",
+    "jsconfig.json",
+    "LICENSE",
+    "README.md",
+    "types.d.ts"
+  ],
+  "scripts": {
+    "start": "teq web:start",
+    "help": "teq help",
+    "export:static": "node --experimental-loader ./scripts/windows-drive-loader.mjs ./node_modules/@teqfw/cli/bin/teq.mjs cms:export",
+    "test:accept": "node --test $(find ./test/accept -name '*.test.mjs')",
+    "test:unit": "node --test $(find ./test/unit -name '*.test.mjs')",
+    "test": "npm run test:unit && npm run test:accept",
+    "typecheck": "tsc -p jsconfig.json",
+    "validate:esm": "teqfw-esm-validator src --profile base"
+  },
+  "dependencies": {
+    "@flancer32/teq-tmpl": "<=1.0.0",
+    "@teqfw/cfg": ">=2.0.0",
+    "@teqfw/cli": ">=2.4.0",
+    "@teqfw/di": ">=2.9.0",
+    "@teqfw/log": ">=2.0.0",
+    "@teqfw/web": "^2.0.0",
+    "marked": "^16.4.2",
+    "mustache": "^4.2.0",
+    "nunjucks": "^3.2.4",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@flancer32/teq-tmpl": "github:flancer32/teq-tmpl#main",
+    "@types/node": "^20.19.43",
+    "@xmldom/xmldom": "^0.9.12",
+    "typescript": "^5.9.3"
+  },
+  "teqfw": {
+    "fw": {
+      "di": {
+        "namespaces": [
+          {
+            "prefix": "Fl32_Cms_",
+            "path": "./src",
+            "ext": ".mjs"
+          }
+        ]
+      },
+      "cli": {
+        "command": {
+          "default": "web:start"
+        },
+        "container": {
+          "configurator": "./bootstrap/di-config.mjs"
+        },
+        "plugin": "Fl32_Cms_Back_Cli_Plugin$",
+        "commands": [
+          {
+            "id": "cms:generate",
+            "summary": "Generate robots.txt, llms.txt, and sitemap.xml.",
+            "component": "Fl32_Cms_Back_Cli_Command_Generate$"
+          },
+          {
+            "id": "cms:export",
+            "summary": "Export Markdown publications and public assets as a static site.",
+            "component": "Fl32_Cms_Back_Cli_Command_Export$"
+          }
+        ]
+      }
+    }
+  },
+  "overrides": {
+    "whatwg-url": "13.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/teqfw"
+  }
+}

@@ -1,0 +1,26 @@
+:root {
+    color-scheme: light dark;
+    font-family: system-ui, sans-serif;
+    line-height: 1.6;
+}
+
+body {
+    margin: 0 auto;
+    max-width: 48rem;
+    padding: 2rem 1.25rem;
+}
+
+h1 {
+    line-height: 1.2;
+}
+
+a {
+    text-underline-offset: 0.15em;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}

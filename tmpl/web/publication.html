@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="{{ locale or 'en' }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ publication.metadata.title }}</title>
+    <meta name="description" content="{{ publication.metadata.description }}">
+    <link rel="canonical" href="{{ canonicalUrl }}">
+    <link rel="icon" href="{{ siteBasePath }}/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ siteBasePath }}/assets/site.css">
+    {% for language, url in alternateUrls %}<link rel="alternate" hreflang="{{ language }}" href="{{ url }}">
+    {% endfor %}{% if markdownAlternateUrl %}<link rel="alternate" type="text/markdown" href="{{ markdownAlternateUrl }}">{% endif %}
+</head>
+<body>
+<nav aria-label="Publication formats">
+    <a href="{{ siteBasePath }}/">Talgaticus</a>
+    {% if markdownAlternateUrl %}<a href="{{ markdownAlternateUrl }}">Markdown</a>{% endif %}
+    {% for language, url in alternateUrls %}<a href="{{ url }}" lang="{{ language }}">{{ language | upper }}</a>{% endfor %}
+</nav>
+<main>
+    <article>
+        <header><h1>{{ publication.metadata.title }}</h1><p>{{ publication.metadata.description }}</p></header>
+        {{ publication.html | safe }}
+    </article>
+</main>
+</body>
+</html>
