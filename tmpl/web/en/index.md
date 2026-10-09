@@ -21,4 +21,5 @@ RU: [HTML](https://talgatiko.github.io/ru/) · [Markdown](https://talgatiko.gith
 - [Forgotten your password? Why is that my problem?](https://talgatiko.github.io/en/security/ib-003/) · [Markdown](https://talgatiko.github.io/en/security/ib-003.md)
 - [A token in a repository: who failed to do their job?](https://talgatiko.github.io/en/security/ib-004/) · [Markdown](https://talgatiko.github.io/en/security/ib-004.md)
 - [The Tower on the Shore: why is securing the network the employee's job?](https://talgatiko.github.io/en/security/ib-005/) · [Markdown](https://talgatiko.github.io/en/security/ib-005.md)
+- [Internet Inodes: One Copy of a File for Every Application](https://talgatiko.github.io/en/it/intinode-v4/) · [Markdown](https://talgatiko.github.io/en/it/intinode-v4.md)
 - [Reversible Selective Compression of AI Chat History](https://talgatiko.github.io/en/it/reversible-context-memory/) · [Markdown](https://talgatiko.github.io/en/it/reversible-context-memory.md)

@@ -21,4 +21,5 @@ RU: [HTML](https://talgatiko.github.io/ru/) · [Markdown](https://talgatiko.gith
 - [Пароль забыт: почему это моя проблема?](https://talgatiko.github.io/ru/security/ib-003/) · [Markdown](https://talgatiko.github.io/ru/security/ib-003.md)
 - [Токен в репозитории: кто здесь не сделал свою работу](https://talgatiko.github.io/ru/security/ib-004/) · [Markdown](https://talgatiko.github.io/ru/security/ib-004.md)
 - [Башня на берегу: почему защищать сеть должен сотрудник?](https://talgatiko.github.io/ru/security/ib-005/) · [Markdown](https://talgatiko.github.io/ru/security/ib-005.md)
+- [Интернет-иноды: одна копия файла для всех приложений](https://talgatiko.github.io/ru/it/intinode-v4/) · [Markdown](https://talgatiko.github.io/ru/it/intinode-v4.md)
 - [Обратимое селективное сжатие истории ИИ-чата](https://talgatiko.github.io/ru/it/reversible-context-memory/) · [Markdown](https://talgatiko.github.io/ru/it/reversible-context-memory.md)
