@@ -11,7 +11,7 @@
     {% for language, url in alternateUrls %}<link rel="alternate" hreflang="{{ language }}" href="{{ url }}">
     {% endfor %}{% if markdownAlternateUrl %}<link rel="alternate" type="text/markdown" href="{{ markdownAlternateUrl }}">{% endif %}
 </head>
-<body>
+<body class="{% if publication.route == 'index' %}home{% else %}page{% endif %}">
 <nav aria-label="Publication formats">
     <a href="{{ siteBasePath }}/">Talgaticus</a>
     {% if markdownAlternateUrl %}<a href="{{ markdownAlternateUrl }}">Markdown</a>{% endif %}

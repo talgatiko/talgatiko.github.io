@@ -64,6 +64,7 @@ def format_links(locale: str, route: str) -> str:
 
 
 site_map: dict[str, list[tuple[str, str]]] = {}
+section_map: dict[str, dict[str, list[tuple[str, str]]]] = {}
 
 
 for locale, words in LABELS.items():
@@ -92,6 +93,7 @@ for locale, words in LABELS.items():
     for section in ("security", "it"):
         site_map[locale].append((section, words[section]))
         site_map[locale].extend(by_section[section])
+    section_map[locale] = by_section
     sections = "\n".join(f"- [{words[section]}]({html_url(locale, section)}) "
                          f"· [Markdown]({markdown_url(locale, section)})"
                          for section in ("security", "it"))
@@ -107,16 +109,47 @@ for locale, words in LABELS.items():
 
 neutral = {
     "title": "TALGATICUS / ТАЛГАТИКУС",
-    "description": "Articles in Russian and English",
-    "date": "2026-10-07",
+    "description": "Публикации об информационной безопасности, ИТ и НСК · Publications on information security, IT, and the New Social Contract",
+    "date": "2026-10-09",
 }
-map_lines = ["# TALGATICUS / ТАЛГАТИКУС", "", "## Главная / Home", "",
-             "- [HTML](https://talgatiko.github.io/) · [Markdown](https://talgatiko.github.io/index.md)"]
-for locale, heading in (("ru", "Русские страницы"), ("en", "English pages")):
+map_lines = [
+    "# TALGATICUS / ТАЛГАТИКУС",
+    "",
+    "## Проекты / Projects",
+    "",
+    "- **Новый социальный контракт / New Social Contract** · "
+    "[Действующий сайт / Current website](https://talgatiko.github.io/new-social-contract/)",
+    "- **Проекты автора / Author's projects** · "
+    "[Профиль и публичные репозитории / Profile and public repositories](https://github.com/talgatiko)",
+    "",
+    "## Публикации / Publications",
+    "",
+    f"- **Информационная безопасность · RU**: {format_links('ru', 'security')}",
+    f"- **Information security · EN**: {format_links('en', 'security')}",
+    f"- **Информационные технологии · RU**: {format_links('ru', 'it')}",
+    f"- **Information technology · EN**: {format_links('en', 'it')}",
+    "",
+    "## Полная карта сайта / Complete site map",
+    "",
+    "- [Главная HTML / Home HTML](https://talgatiko.github.io/) · "
+    "[Главная Markdown / Home Markdown](https://talgatiko.github.io/index.md)",
+]
+for locale, heading in (("ru", "Русский / Russian"), ("en", "English / Английский")):
+    words = LABELS[locale]
     map_lines.extend(["", f"### {heading}", ""])
-    map_lines.extend(f"- [{title}]({html_url(locale, route)}) · [Markdown]({markdown_url(locale, route)})"
-                     for route, title in site_map[locale])
-map_lines.extend(["", "### НСК · действующий отдельный раздел", ""])
+    map_lines.append(f"- {format_links(locale, 'index')}")
+    for section in ("security", "it"):
+        map_lines.extend([
+            "",
+            f"#### {words[section]}",
+            "",
+            f"- {format_links(locale, section)}",
+        ])
+        map_lines.extend(
+            f"- [{title}]({html_url(locale, route)}) · [Markdown]({markdown_url(locale, route)})"
+            for route, title in section_map[locale][section]
+        )
+map_lines.extend(["", "### НСК · действующий отдельный сайт / Current NSK site", ""])
 map_lines.extend(f"- [{title}](https://talgatiko.github.io/new-social-contract/{route})"
                  for route, title in LEGACY_NSK)
 map_lines.append("")
