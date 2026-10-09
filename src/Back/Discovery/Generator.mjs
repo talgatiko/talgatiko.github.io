@@ -8,13 +8,12 @@ export default class Generator {
     /**
      * @param {object} deps
      * @param {Fl32_Cms_Back_Config} deps.config
-     * @param {Fl32_Cms_Back_Publication_Routing} deps.routing
      * @param {Fl32_Cms_Back_Publication_Catalog} deps.catalog
      * @param {Fl32_Tmpl_Back_Config} deps.tmplConfig
      * @param {typeof import('node:fs/promises')} deps.fs
      * @param {typeof import('node:path')} deps.path
      */
-    constructor({config, routing, catalog, tmplConfig, fs, path}) {
+    constructor({config, catalog, tmplConfig, fs, path}) {
         /**
          * @param {object} [options]
          * @param {string} [options.baseUrl] Optional full public base URL for static exports.
@@ -30,30 +29,64 @@ export default class Generator {
                 throw new Error('Discovery base URL must be an absolute HTTP URL without credentials, query, or fragment.');
             }
             base.pathname = `${base.pathname.replace(/\/+$/, '')}/`;
+            /** @type {string[]} */
             const locales = tmplConfig.getAvailableLocales();
             const selection = config.getSitemapRepresentations();
             const inventory = await catalog.listRepresentations();
-            const sitemapUrls = [...new Set(inventory
-                .filter(resource => selection === 'both' || resource.representation === selection)
-                .map(resource => {
-                    let pathname = resource.url.replace(/^\/+/, '');
-                    if (staticHtmlUrls && resource.representation === 'html') {
+            const resources = inventory.filter(resource => resource.item.metadata.indexable !== false);
+            /** @param {Fl32_Cms_Back_Publication_Resource} resource @returns {string} */
+            const getLocale = resource => {
+                if (locales.includes(resource.item.locale)) return resource.item.locale;
+                const firstSegment = resource.url.replace(/^\/+/, '').split('/')[0];
+                return locales.includes(firstSegment) ? firstSegment : '';
+            };
+            /** @param {Fl32_Cms_Back_Publication_Resource} resource @returns {string} */
+            const toPublicUrl = resource => {
+                let pathname = resource.url.replace(/^\/+/, '');
+                if (staticHtmlUrls && resource.representation === 'html') {
+                    if (resource.item.route === 'index') {
+                        const locale = getLocale(resource);
+                        pathname = locale ? `${locale}/` : '';
+                    } else {
                         const clean = pathname.replace(/\/+$/, '');
                         pathname = clean ? `${clean}/` : '';
                     }
-                    return new URL(pathname, base).href;
-                }))].sort();
-            const markdownUrls = [...new Set((await catalog.listNeutral())
-                .filter(item => item.metadata.indexable !== false)
-                .map(item => new URL(routing.getMarkdownUrl({route: item.route}).replace(/^\/+/, ''), base).href))].sort();
+                }
+                return new URL(pathname, base).href;
+            };
+            const sitemapUrls = [...new Set(resources
+                .filter(resource => selection === 'both' || resource.representation === selection)
+                .map(toPublicUrl))].sort();
             const robots = `User-agent: *\nAllow: /\nSitemap: ${new URL('sitemap.xml', base).href}\n`;
+            /** @type {Map<string, number>} */
+            const localeOrder = new Map([['', 0]]);
+            locales.forEach((locale, index) => localeOrder.set(locale, index + 1));
+            const representationOrder = new Map([['markdown', 0], ['html', 1]]);
+            const llmsResources = [...resources].sort((a, b) => {
+                const routeOrder = a.item.route.localeCompare(b.item.route);
+                if (routeOrder) return routeOrder;
+                const languageOrder = (localeOrder.get(getLocale(a)) ?? Number.MAX_SAFE_INTEGER) -
+                    (localeOrder.get(getLocale(b)) ?? Number.MAX_SAFE_INTEGER);
+                if (languageOrder) return languageOrder;
+                return (representationOrder.get(a.representation) ?? Number.MAX_SAFE_INTEGER) -
+                    (representationOrder.get(b.representation) ?? Number.MAX_SAFE_INTEGER);
+            });
+            const llmsGroups = new Map();
+            for (const resource of llmsResources) {
+                const route = resource.item.route;
+                if (!llmsGroups.has(route)) llmsGroups.set(route, []);
+                const locale = getLocale(resource) || 'site';
+                const language = locale === 'site' ? 'Site' : locale.toUpperCase();
+                const format = resource.representation === 'markdown' ? 'Markdown' : 'HTML';
+                const title = resource.item.metadata.title;
+                llmsGroups.get(route).push(`- ${language} ${format}: ${title} — ${toPublicUrl(resource)}`);
+            }
             const llms = [
-                '# Published Markdown',
+                '# TALGATICUS / ТАЛГАТИКУС',
                 '',
-                `Human locales: ${locales.join(', ')}`,
+                'Published pages. Markdown is the primary content format; HTML is provided for browsers.',
                 '',
-                ...markdownUrls.map(url => `- ${url}`),
-                '',
+                ...[...llmsGroups.entries()].flatMap(([route, entries]) => [`## ${route}`, ...entries, '']),
             ].join('\n');
             /** @param {string} value @returns {string} */
             function escapeXml(value) {
@@ -106,7 +139,6 @@ export default class Generator {
 export const __deps__ = Object.freeze({
     default: Object.freeze({
         config: 'Fl32_Cms_Back_Config$',
-        routing: 'Fl32_Cms_Back_Publication_Routing$',
         catalog: 'Fl32_Cms_Back_Publication_Catalog$',
         tmplConfig: 'Fl32_Tmpl_Back_Config$',
         fs: 'node:fs/promises',

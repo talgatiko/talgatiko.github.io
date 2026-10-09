@@ -16,7 +16,7 @@ export default class Fl32_Cms_Back_Config {
 
         const baseUrl = cast.string(raw.BASE_URL);
         const staticBaseUrl = cast.string(raw.STATIC_BASE_URL);
-        const sitemapRepresentations = raw.SITEMAP_REPRESENTATIONS ?? 'html';
+        const sitemapRepresentations = raw.SITEMAP_REPRESENTATIONS ?? 'both';
         if (!['html', 'markdown', 'both'].includes(sitemapRepresentations)) {
             throw new Error('SITEMAP_REPRESENTATIONS must be html, markdown, or both.');
         }

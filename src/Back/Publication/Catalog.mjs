@@ -70,29 +70,35 @@ export default class Fl32_Cms_Back_Publication_Catalog {
         };
 
         /**
-         * Inventory distinct source/representation identities using runtime availability.
-         * Neutral Markdown keeps its existing explicit address; other sources use exact locale URLs.
+         * Inventory every public Markdown URL and available HTML projection.
          * @see https://github.com/flancer32/teq-cms/blob/main/ctx/docs/architecture/publication.md#discovery
          * @returns {Promise<Fl32_Cms_Back_Publication_Resource[]>}
          */
         this.listRepresentations = async () => {
-            const neutral = new Map((await this.listNeutral()).map(item => [item.route, item.locale]));
             /** @type {Fl32_Cms_Back_Publication_Resource[]} */
             const resources = [];
+            /** @param {Fl32_Cms_Back_Publication_Item} item @param {string} locale */
+            const addMarkdown = (item, locale) => {
+                if (item.metadata.indexable === false) return;
+                resources.push({item, representation: 'markdown',
+                    url: routing.getMarkdownUrl({route: item.route, locale})});
+            };
             for (const locale of [...(routing.isSite() ? [''] : []), ...tmplConfig.getAvailableLocales()]) {
                 for (const item of await this.list({locale})) {
                     // Public delivery and discovery preference are independent.
                     if (item.metadata.indexable === false) continue;
-                    const markdownLocale = neutral.get(item.route) === item.locale ? '' : item.locale;
-                    resources.push({item, representation: 'markdown',
-                        url: routing.getMarkdownUrl({route: item.route, locale: markdownLocale})});
+                    addMarkdown(item, item.locale);
                     if (await this.getPresentation({item})) {
                         resources.push({item, representation: 'html',
                             url: routing.getUrl({route: item.route, locale: item.locale})});
                     }
                 }
             }
-            return resources.sort((a, b) => a.url < b.url ? -1 : a.url > b.url ? 1 : 0);
+            // The neutral Markdown route is also public, including when source selection
+            // resolves it to the default language. Keep it alongside the explicit locale URL.
+            for (const item of await this.listNeutral()) addMarkdown(item, '');
+            const unique = new Map(resources.map(resource => [`${resource.representation}:${resource.url}`, resource]));
+            return [...unique.values()].sort((a, b) => a.url < b.url ? -1 : a.url > b.url ? 1 : 0);
         };
 
         /**

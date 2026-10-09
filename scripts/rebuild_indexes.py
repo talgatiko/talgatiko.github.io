@@ -47,11 +47,20 @@ def write_page(locale: str, route: str, title: str, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     metadata = {"title": title, "description": title, "date": "2026-10-07"}
     front = "---\n" + "\n".join(f"{k}: {json.dumps(v, ensure_ascii=False)}" for k, v in metadata.items()) + "\n---\n\n"
-    path.write_text(front + content, encoding="utf-8")
+    path.write_text(front + content, encoding="utf-8", newline="\r\n")
 
 
 def html_url(locale: str, route: str) -> str:
     return f"https://talgatiko.github.io/{locale}/" if route == "index" else f"https://talgatiko.github.io/{locale}/{route}/"
+
+
+def markdown_url(locale: str, route: str) -> str:
+    return (f"https://talgatiko.github.io/{locale}/index.md" if route == "index"
+            else f"https://talgatiko.github.io/{locale}/{route}.md")
+
+
+def format_links(locale: str, route: str) -> str:
+    return f"[HTML]({html_url(locale, route)}) · [Markdown]({markdown_url(locale, route)})"
 
 
 site_map: dict[str, list[tuple[str, str]]] = {}
@@ -71,13 +80,11 @@ for locale, words in LABELS.items():
         by_section[section].append((route, front_matter(path)["title"]))
 
     for section, items in by_section.items():
-        links = "\n".join(f"- [{title}](https://talgatiko.github.io/{locale}/{route}/) "
-                          f"([Markdown](https://talgatiko.github.io/{locale}/{route}.md))"
+        links = "\n".join(f"- [{title}]({html_url(locale, route)}) "
+                          f"· [Markdown]({markdown_url(locale, route)})"
                           for route, title in items)
         body = (f"# {words[section]}\n\n"
-                f"[RU](https://talgatiko.github.io/ru/{section}/) · "
-                f"[EN](https://talgatiko.github.io/en/{section}/) · "
-                f"[Markdown](https://talgatiko.github.io/{locale}/{section}.md)\n\n"
+                f"RU: {format_links('ru', section)} · EN: {format_links('en', section)}\n\n"
                 f"{links}\n")
         write_page(locale, section, words[section], body)
 
@@ -85,14 +92,14 @@ for locale, words in LABELS.items():
     for section in ("security", "it"):
         site_map[locale].append((section, words[section]))
         site_map[locale].extend(by_section[section])
-    sections = "\n".join(f"- [{words[section]}]({html_url(locale, section)})"
+    sections = "\n".join(f"- [{words[section]}]({html_url(locale, section)}) "
+                         f"· [Markdown]({markdown_url(locale, section)})"
                          for section in ("security", "it"))
-    articles = "\n".join(f"- [{title}]({html_url(locale, route)})"
+    articles = "\n".join(f"- [{title}]({html_url(locale, route)}) "
+                         f"· [Markdown]({markdown_url(locale, route)})"
                          for section in ("security", "it") for route, title in by_section[section])
     body = (f"# {words['home']}\n\n"
-            f"[RU](https://talgatiko.github.io/ru/) · "
-            f"[EN](https://talgatiko.github.io/en/) · "
-            f"[Markdown](https://talgatiko.github.io/{locale}/index.md)\n\n"
+            f"RU: {format_links('ru', 'index')} · EN: {format_links('en', 'index')}\n\n"
             f"## {words['sections']}\n\n{sections}\n"
             f"- [{words['old']}](https://talgatiko.github.io/new-social-contract/)\n\n"
             f"## {words['articles']}\n\n{articles}\n")
@@ -103,16 +110,17 @@ neutral = {
     "description": "Articles in Russian and English",
     "date": "2026-10-07",
 }
-map_lines = ["# TALGATICUS / ТАЛГАТИКУС", "", "## Карта сайта · HTML", "",
-             "- [Главная / Home](https://talgatiko.github.io/)"]
+map_lines = ["# TALGATICUS / ТАЛГАТИКУС", "", "## Главная / Home", "",
+             "- [HTML](https://talgatiko.github.io/) · [Markdown](https://talgatiko.github.io/index.md)"]
 for locale, heading in (("ru", "Русские страницы"), ("en", "English pages")):
     map_lines.extend(["", f"### {heading}", ""])
-    map_lines.extend(f"- [{title}]({html_url(locale, route)})" for route, title in site_map[locale])
+    map_lines.extend(f"- [{title}]({html_url(locale, route)}) · [Markdown]({markdown_url(locale, route)})"
+                     for route, title in site_map[locale])
 map_lines.extend(["", "### НСК · действующий отдельный раздел", ""])
 map_lines.extend(f"- [{title}](https://talgatiko.github.io/new-social-contract/{route})"
                  for route, title in LEGACY_NSK)
 map_lines.append("")
 (ROOT / "index.md").write_text(
     "---\n" + "\n".join(f"{key}: {json.dumps(value, ensure_ascii=False)}" for key, value in neutral.items()) +
-    "\n---\n\n" + "\n".join(map_lines), encoding="utf-8")
+    "\n---\n\n" + "\n".join(map_lines), encoding="utf-8", newline="\r\n")
 print("Rebuilt bilingual site and section indexes.")
