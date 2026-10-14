@@ -53,7 +53,9 @@ export default class Fl32_Cms_Back_Publication_Source {
          */
         this.readNeutral = async ({route}) => {
             if (!this.getFamily(route)) return null;
-            const candidates = new Set([...(routing.isSite() ? [''] : []), 'en', tmplConfig.getDefaultLocale()]);
+            // A localized article has no neutral Markdown alias. Only explicitly
+            // authored neutral sources (for example the bilingual homepage) get one.
+            const candidates = new Set(routing.isSite() ? [''] : ['en', tmplConfig.getDefaultLocale()]);
             for (const locale of candidates) {
                 if (locale === undefined || (locale !== '' && !locales.includes(locale))) continue;
                 if (routing.isSite()) {

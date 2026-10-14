@@ -10,7 +10,7 @@ date: "2026-10-09"
 
 ## <span lang="ru">Проекты</span> / <span lang="en">Projects</span>
 
-- **<span lang="ru">Новый социальный контракт</span> / <span lang="en">New Social Contract</span>** · [<span lang="ru">Действующий сайт</span> / <span lang="en">Current website</span>](https://talgatiko.github.io/new-social-contract/)
+- **<span lang="ru">Новый социальный контракт</span> / <span lang="en">New Social Contract</span>** · [<span lang="ru">НСК · русский</span>](https://talgatiko.github.io/NSK/ru/) · [<span lang="en">NSK · English</span>](https://talgatiko.github.io/NSK/en/)
 - **<span lang="ru">Проекты автора</span> / <span lang="en">Author's projects</span>** · [<span lang="ru">Профиль и публичные репозитории</span> / <span lang="en">Profile and public repositories</span>](https://github.com/talgatiko)
 
 ## <span lang="ru">Публикации</span> / <span lang="en">Publications</span>
@@ -62,19 +62,28 @@ date: "2026-10-09"
 - [Internet Inodes: One Copy of a File for Every Application](https://talgatiko.github.io/en/it/intinode-v4/) · [Markdown](https://talgatiko.github.io/en/it/intinode-v4.md)
 - [Reversible Selective Compression of AI Chat History](https://talgatiko.github.io/en/it/reversible-context-memory/) · [Markdown](https://talgatiko.github.io/en/it/reversible-context-memory.md)
 
-### <span lang="ru">НСК · действующий отдельный сайт</span> / <span lang="en">Current NSK site</span>
+### <span lang="ru">НСК · русский</span>
 
-- [Главная НСК](https://talgatiko.github.io/new-social-contract/)
-- [Русская главная НСК](https://talgatiko.github.io/new-social-contract/ru/)
-- [Каталог материалов НСК](https://talgatiko.github.io/new-social-contract/catalog/)
-- [Как помочь проекту НСК](https://talgatiko.github.io/new-social-contract/help/)
-- [Условия использования НСК](https://talgatiko.github.io/new-social-contract/license/)
-- [NSK-001 · Паспорт концепции](https://talgatiko.github.io/new-social-contract/ru/texts/nsk-001/)
-- [NSK-002 · НСК — кратко](https://talgatiko.github.io/new-social-contract/ru/texts/nsk-002/)
-- [NSK-003 · Полная статья с FAQ](https://talgatiko.github.io/new-social-contract/ru/texts/nsk-003/)
-- [NSK-005 · Как проводится база](https://talgatiko.github.io/new-social-contract/ru/texts/nsk-005/)
-- [NSK-006 · Условные примеры](https://talgatiko.github.io/new-social-contract/ru/texts/nsk-006/)
-- [NSK-007 · Открытые вопросы](https://talgatiko.github.io/new-social-contract/ru/texts/nsk-007/)
-- [NSK-008 · Источники](https://talgatiko.github.io/new-social-contract/ru/texts/nsk-008/)
-- [NSK-009 · Об авторе](https://talgatiko.github.io/new-social-contract/ru/texts/nsk-009/)
-- [NSK-010 · Оригинал LiveJournal 2010 года](https://talgatiko.github.io/new-social-contract/ru/texts/nsk-010/)
+- [Главная HTML](https://talgatiko.github.io/NSK/ru/) · [Главная Markdown](https://talgatiko.github.io/NSK/ru/index.md) · [Каталог](https://talgatiko.github.io/NSK/ru/catalog/)
+- [NSK-001 · Паспорт концепции](https://talgatiko.github.io/NSK/ru/texts/nsk-001/) · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-001.md)
+- [NSK-002 · НСК — кратко](https://talgatiko.github.io/NSK/ru/texts/nsk-002/) · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-002.md)
+- [NSK-003 · Полная статья и FAQ](https://talgatiko.github.io/NSK/ru/texts/nsk-003/) · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-003.md)
+- [NSK-005 · Как проводится база](https://talgatiko.github.io/NSK/ru/texts/nsk-005/) · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-005.md)
+- [NSK-006 · Условные примеры](https://talgatiko.github.io/NSK/ru/texts/nsk-006/) · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-006.md)
+- [NSK-007 · Открытые вопросы](https://talgatiko.github.io/NSK/ru/texts/nsk-007/) · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-007.md)
+- [NSK-008 · Источники](https://talgatiko.github.io/NSK/ru/texts/nsk-008/) · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-008.md)
+- [NSK-009 · Об авторе](https://talgatiko.github.io/NSK/ru/texts/nsk-009/) · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-009.md)
+- [NSK-010 · Оригинал LiveJournal 2010 года](https://talgatiko.github.io/NSK/ru/texts/nsk-010/) · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-010.md)
+
+### <span lang="en">NSK · English</span>
+
+- [Home HTML](https://talgatiko.github.io/NSK/en/) · [Home Markdown](https://talgatiko.github.io/NSK/en/index.md) · [Catalogue](https://talgatiko.github.io/NSK/en/catalog/)
+- [NSK-001 · Concept passport](https://talgatiko.github.io/NSK/en/texts/nsk-001/) · [Markdown](https://talgatiko.github.io/NSK/en/texts/nsk-001.md)
+- [NSK-002 · In brief](https://talgatiko.github.io/NSK/en/texts/nsk-002/) · [Markdown](https://talgatiko.github.io/NSK/en/texts/nsk-002.md)
+- [NSK-003 · Full article and FAQ](https://talgatiko.github.io/NSK/en/texts/nsk-003/) · [Markdown](https://talgatiko.github.io/NSK/en/texts/nsk-003.md)
+- [NSK-005 · How the base is administered](https://talgatiko.github.io/NSK/en/texts/nsk-005/) · [Markdown](https://talgatiko.github.io/NSK/en/texts/nsk-005.md)
+- [NSK-006 · Illustrative examples](https://talgatiko.github.io/NSK/en/texts/nsk-006/) · [Markdown](https://talgatiko.github.io/NSK/en/texts/nsk-006.md)
+- [NSK-007 · Open questions](https://talgatiko.github.io/NSK/en/texts/nsk-007/) · [Markdown](https://talgatiko.github.io/NSK/en/texts/nsk-007.md)
+- [NSK-008 · Sources](https://talgatiko.github.io/NSK/en/texts/nsk-008/) · [Markdown](https://talgatiko.github.io/NSK/en/texts/nsk-008.md)
+- [NSK-009 · About the author](https://talgatiko.github.io/NSK/en/texts/nsk-009/) · [Markdown](https://talgatiko.github.io/NSK/en/texts/nsk-009.md)
+- [NSK-010 · Original LiveJournal text in Russian](https://talgatiko.github.io/NSK/ru/texts/nsk-010/) · [RU Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-010.md) · [English translation](https://talgatiko.github.io/NSK/en/texts/nsk-010/) · [EN Markdown](https://talgatiko.github.io/NSK/en/texts/nsk-010.md)

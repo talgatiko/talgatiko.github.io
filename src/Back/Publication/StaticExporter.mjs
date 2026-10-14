@@ -147,6 +147,11 @@ export default class StaticExporter {
             if (!/^[A-Za-z0-9_-]*$/.test(locale) || !/^[A-Za-z0-9_-]+(?:\/[A-Za-z0-9_-]+)*$/.test(route)) {
                 throw new Error('Catalog returned an unsafe static publication identity.');
             }
+            if (route.startsWith('NSK/') && locale) {
+                const projectRoute = route.slice('NSK/'.length);
+                if (projectRoute === 'index') return [`NSK/${locale}/index.html`];
+                return [`NSK/${locale}/${projectRoute}/index.html`, `NSK/${locale}/${projectRoute}.html`];
+            }
             const prefix = locale ? `${locale}/` : '';
             if (route === 'index') return [`${prefix}index.html`];
             return [`${prefix}${route}/index.html`, `${prefix}${route}.html`];

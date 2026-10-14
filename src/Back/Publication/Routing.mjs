@@ -42,7 +42,15 @@ export default class Routing {
          * @param {string} [deps.locale]
          * @returns {string}
          */
-        this.getMarkdownUrl = ({route, locale}) => locale ? `/${locale}/${route}.md` : `/${route}.md`;
+        this.getMarkdownUrl = ({route, locale}) => {
+            if (route.startsWith('NSK/') && locale) {
+                const projectRoute = route.slice('NSK/'.length);
+                return projectRoute === 'index'
+                    ? `/NSK/${locale}/index.md`
+                    : `/NSK/${locale}/${projectRoute}.md`;
+            }
+            return locale ? `/${locale}/${route}.md` : `/${route}.md`;
+        };
         /**
          * @param {object} deps
          * @param {string} deps.route
@@ -50,6 +58,12 @@ export default class Routing {
          * @returns {string}
          */
         this.getUrl = ({route, locale}) => {
+            if (route.startsWith('NSK/') && locale) {
+                const projectRoute = route.slice('NSK/'.length);
+                return projectRoute === 'index'
+                    ? `/NSK/${locale}/`
+                    : `/NSK/${locale}/${projectRoute}/`;
+            }
             const resource = mode === 'site' && route === 'index' ? '' : route;
             return locale ? `/${locale}/${resource}` : `/${resource}`;
         };

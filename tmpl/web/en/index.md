@@ -12,7 +12,7 @@ RU: [HTML](https://talgatiko.github.io/ru/) · [Markdown](https://talgatiko.gith
 
 - [Information security](https://talgatiko.github.io/en/security/) · [Markdown](https://talgatiko.github.io/en/security.md)
 - [Information technology](https://talgatiko.github.io/en/it/) · [Markdown](https://talgatiko.github.io/en/it.md)
-- [Current NSK site](https://talgatiko.github.io/new-social-contract/)
+- [NSK project in English](https://talgatiko.github.io/NSK/en/) · [Русская версия](https://talgatiko.github.io/NSK/ru/)
 
 ## Articles
 
