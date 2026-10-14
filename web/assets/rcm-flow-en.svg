@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1780" role="img" aria-labelledby="title desc">
+  <title id="title">Request flow in the reversible selective compression system</title>
+  <desc id="desc">An accepted event is appended to the immutable archive and indexed. The history snapshot is built from the archive, chunks, intent vector, and protection rules. The system checks the budget: if the request does not fit, only eligible level 1 chunks are omitted; if the budget still cannot be met, processing stops without calling the model. After the model responds, it may request a bounded archive read; the read call and result are stored as new events. The final answer is also saved in the archive.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#245e4c"/></marker>
+    <marker id="arrow-muted" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#8a6a45"/></marker>
+    <style>
+      .node{fill:#fffef9;stroke:#245e4c;stroke-width:2.5}.decision{fill:#f5edda;stroke:#8a6a45;stroke-width:2.5}
+      .edge{fill:none;stroke:#245e4c;stroke-width:3;marker-end:url(#arrow)}.optional{fill:none;stroke:#8a6a45;stroke-width:2.5;stroke-dasharray:8 7;marker-end:url(#arrow-muted)}
+      text{font-family:Arial,sans-serif;fill:#19382f;text-anchor:middle;font-size:20px}.edge-label{font-size:16px;font-weight:bold;paint-order:stroke;stroke:#f6f4ed;stroke-width:6px;stroke-linejoin:round}
+    </style>
+  </defs>
+  <g>
+    <path class="edge" d="M450 92V130"/><path class="edge" d="M365 205L215 255"/><path class="edge" d="M535 205L685 255"/>
+    <path class="edge" d="M215 347L350 535"/><path class="edge" d="M685 347L550 535"/><path class="edge" d="M215 482L350 535"/><path class="edge" d="M685 482L550 535"/>
+    <path class="edge" d="M450 615V670"/><path class="edge" d="M570 730L640 850"/><path class="edge" d="M450 790L340 1160"/>
+    <path class="edge" d="M685 950V1000"/><path class="edge" d="M685 1100L720 1160"/><path class="edge" d="M515 1050L420 1160"/>
+    <path class="edge" d="M340 1240V1295"/><path class="edge" d="M290 1360L215 1440"/><path class="edge" d="M390 1360L685 1440"/>
+    <path class="edge" d="M215 1520V1600"/><path class="optional" d="M45 300H18V1650H45"/>
+    <path class="optional" d="M385 1650H8V585H300"/><path class="optional" d="M850 1480H885V300H855"/>
+    <text class="edge-label" x="585" y="815">No</text><text class="edge-label" x="465" y="805">Yes</text>
+    <text class="edge-label" x="740" y="1140">No</text><text class="edge-label" x="500" y="1080">Yes</text>
+    <text class="edge-label" x="285" y="1415">Yes</text><text class="edge-label" x="615" y="1415">No</text>
+  </g>
+  <g>
+    <rect class="node" x="250" y="20" width="400" height="72" rx="16"/><text x="450" y="64">Accepted conversation event</text>
+    <rect class="node" x="250" y="130" width="400" height="75" rx="16"/><text x="450" y="176">Append a record to the archive</text>
+    <rect class="node" x="45" y="255" width="340" height="92" rx="16"/><text x="215" y="295"><tspan x="215">Immutable</tspan><tspan x="215" dy="25">archive</tspan></text>
+    <rect class="node" x="515" y="255" width="340" height="92" rx="16"/><text x="685" y="295"><tspan x="685">Chunks, stable addresses,</tspan><tspan x="685" dy="25">and embeddings</tspan></text>
+    <rect class="node" x="45" y="390" width="340" height="92" rx="16"/><text x="215" y="430"><tspan x="215">Intent vector:</tspan><tspan x="215" dy="25">new message or cap change</tspan></text>
+    <rect class="node" x="515" y="390" width="340" height="92" rx="16"/><text x="685" y="430"><tspan x="685">Protect levels 5 and 4</tspan><tspan x="685" dy="25">and protocol dependencies</tspan></text>
+    <rect class="node" x="250" y="535" width="400" height="80" rx="16"/><text x="450" y="582">Project the complete history snapshot</text>
+    <path class="decision" d="M450 670L600 730L450 790L300 730Z"/><text x="450" y="725"><tspan x="450">Does the full request</tspan><tspan x="450" dy="25">fit the budget?</tspan></text>
+    <rect class="node" x="515" y="850" width="340" height="100" rx="16"/><text x="685" y="885"><tspan x="685">Omit only eligible level 1 chunks</tspan><tspan x="685" dy="25">by cosine; add addresses</tspan><tspan x="685" dy="25">of omitted content</tspan></text>
+    <path class="decision" d="M685 1000L815 1050L685 1100L555 1050Z"/><text x="685" y="1045">Is the budget met?</text>
+    <rect class="node" x="570" y="1160" width="300" height="90" rx="16"/><text x="720" y="1195"><tspan x="720">budget_unachievable</tspan><tspan x="720" dy="25">stop without an LLM call</tspan></text>
+    <rect class="node" x="150" y="1160" width="380" height="80" rx="16"/><text x="340" y="1208">LLM request</text>
+    <rect class="decision" x="190" y="1295" width="300" height="65" rx="16"/><text x="340" y="1337">Did the model request read?</text>
+    <rect class="node" x="45" y="1440" width="340" height="80" rx="16"/><text x="215" y="1475"><tspan x="215">Bounded read</tspan><tspan x="215" dy="25">by archive address</tspan></text>
+    <rect class="node" x="515" y="1440" width="340" height="80" rx="16"/><text x="685" y="1475"><tspan x="685">Save the final answer</tspan><tspan x="685" dy="25">as a new record</tspan></text>
+    <rect class="node" x="45" y="1600" width="340" height="100" rx="16"/><text x="215" y="1635"><tspan x="215">Save the call and result</tspan><tspan x="215" dy="25">as events; protect the</tspan><tspan x="215" dy="25">active chain</tspan></text>
+  </g>
+</svg>

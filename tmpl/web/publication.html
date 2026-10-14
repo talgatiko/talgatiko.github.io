@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ locale or 'en' }}">
+<html lang="{{ publication.locale or 'en' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,19 +8,34 @@
     <link rel="canonical" href="{{ canonicalUrl }}">
     <link rel="icon" href="{{ siteBasePath }}/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="{{ siteBasePath }}/assets/site.css">
-    {% for language, url in alternateUrls %}<link rel="alternate" hreflang="{{ language }}" href="{{ url }}">
-    {% endfor %}{% if markdownAlternateUrl %}<link rel="alternate" type="text/markdown" href="{{ markdownAlternateUrl }}">{% endif %}
+    {% if markdownAlternateUrl %}<link rel="alternate" type="text/markdown" href="{{ markdownAlternateUrl }}">{% endif %}
 </head>
 <body class="{% if publication.route == 'index' %}home{% else %}page{% endif %}">
 <nav aria-label="Publication formats">
     <a href="{{ siteBasePath }}/">Talgaticus</a>
     {% if markdownAlternateUrl %}<a href="{{ markdownAlternateUrl }}">Markdown</a>{% endif %}
-    {% for language, url in alternateUrls %}<a href="{{ url }}" lang="{{ language }}">{{ language | upper }}</a>{% endfor %}
 </nav>
 <main>
     <article>
-        <header><p>{{ publication.metadata.description }}</p></header>
+        <header>
+            {% if publication.metadata.description_ru and publication.metadata.description_en %}
+            <p><span lang="ru">{{ publication.metadata.description_ru }}</span> · <span lang="en">{{ publication.metadata.description_en }}</span></p>
+            {% else %}<p>{{ publication.metadata.description }}</p>{% endif %}
+        </header>
         {{ publication.html | safe }}
+        {% if publication.metadata.source or publication.metadata.version or publication.metadata.source_sha256 or publication.metadata.author or publication.metadata.license %}
+        <aside class="publication-record" aria-label="{% if publication.locale == 'ru' %}Сведения о публикации{% else %}Publication record{% endif %}">
+            <h2>{% if publication.locale == 'ru' %}Сведения о публикации{% else %}Publication record{% endif %}</h2>
+            <dl>
+                {% if publication.metadata.author %}<dt>{% if publication.locale == 'ru' %}Автор{% else %}Author{% endif %}</dt><dd>{{ publication.metadata.author }}</dd>{% endif %}
+                {% if publication.metadata.date %}<dt>{% if publication.locale == 'ru' %}Дата в записи источника{% else %}Date in source record{% endif %}</dt><dd><time>{{ publication.metadata.date }}</time></dd>{% endif %}
+                {% if publication.metadata.version %}<dt>{% if publication.locale == 'ru' %}Версия источника{% else %}Source version{% endif %}</dt><dd>{{ publication.metadata.version }}</dd>{% endif %}
+                {% if publication.metadata.source %}<dt>{% if publication.locale == 'ru' %}Источник{% else %}Source{% endif %}</dt><dd><a href="{{ publication.metadata.source }}">{{ publication.metadata.source }}</a></dd>{% endif %}
+                {% if publication.metadata.source_sha256 %}<dt>SHA-256</dt><dd><code>{{ publication.metadata.source_sha256 }}</code></dd>{% endif %}
+                {% if publication.metadata.license %}<dt>{% if publication.locale == 'ru' %}Лицензия{% else %}License{% endif %}</dt><dd>{{ publication.metadata.license }}</dd>{% endif %}
+            </dl>
+        </aside>
+        {% endif %}
     </article>
 </main>
 </body>

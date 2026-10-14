@@ -59,14 +59,45 @@ body > nav a:first-child {
 
 main {
     max-width: 1040px;
+    min-width: 0;
     min-height: 65vh;
     margin: 0 auto;
     padding: 44px 28px 70px;
 }
 
 article {
+    min-width: 0;
     max-width: 780px;
     margin: 0 auto;
+}
+
+article img,
+article svg,
+article video {
+    max-width: 100%;
+    height: auto;
+}
+
+article pre {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+}
+
+article pre code {
+    overflow-wrap: normal;
+}
+
+article table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+}
+
+article :not(pre) > code {
+    overflow-wrap: anywhere;
 }
 
 article > header {
@@ -90,6 +121,53 @@ h2 {
 h3 {
     font-size: 23px;
     line-height: 1.4;
+}
+
+.publication-record {
+    margin-top: 3rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font: 15px/1.6 Arial, sans-serif;
+}
+
+.publication-record h2 {
+    margin: 0 0 0.75rem;
+    font-size: 18px;
+}
+
+.publication-record dl {
+    display: grid;
+    grid-template-columns: minmax(8rem, max-content) minmax(0, 1fr);
+    gap: 0.35rem 1rem;
+    margin: 0;
+}
+
+.publication-record dt {
+    font-weight: 700;
+}
+
+.publication-record dd {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.publication-diagram {
+    margin: 2rem 0;
+}
+
+.publication-diagram img {
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+    background: var(--card);
+}
+
+.publication-diagram figcaption {
+    margin-top: 0.65rem;
+    color: var(--muted);
+    font: 15px/1.6 Arial, sans-serif;
 }
 
 li {
@@ -180,6 +258,15 @@ footer {
 
     h2 {
         font-size: 25px;
+    }
+
+    .publication-record dl {
+        grid-template-columns: 1fr;
+        gap: 0.1rem;
+    }
+
+    .publication-record dd + dt {
+        margin-top: 0.5rem;
     }
 }
 

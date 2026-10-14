@@ -146,7 +146,8 @@ export default class Fl32_Cms_Back_Publication_Catalog {
                         if (entry.isSymbolicLink()) continue;
                         const file = path.join(dir, entry.name);
                         if (entry.isDirectory() && /^[A-Za-z0-9_-]+$/.test(entry.name) &&
-                            !(locale === '' && dir === root && tmplConfig.getAvailableLocales().includes(entry.name))) {
+                            !(locale === '' && path.resolve(dir) === path.resolve(realDirectory) &&
+                                tmplConfig.getAvailableLocales().includes(entry.name))) {
                             await scan(file);
                         } else if (entry.isFile() && /^[A-Za-z0-9_-]+\.md$/.test(entry.name)) {
                             const route = path.relative(realLocale, file).replaceAll(path.sep, '/').slice(0, -3);

@@ -1,5 +1,58 @@
 // @ts-check
 
+/** @param {{html: string, locale: string|undefined, route: string, alternateUrls: Record<string, string>, xDefaultUrl: string|undefined, markdownUrl: string|undefined, canonicalUrl: string, metadata: Record<string, any>}} deps */
+const finishHtml = ({html, locale, route, alternateUrls, xDefaultUrl, markdownUrl, canonicalUrl, metadata}) => {
+    const lang = locale || 'en';
+    /** @param {unknown} value */
+    const escapeHtml = value => String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+    html = html.replace(/<html lang="[^"]*">/, `<html lang="${lang}">`);
+    html = html.replace(/\s*<link rel="alternate"[^>]*>/g, '');
+    const alternateTags = Object.entries(alternateUrls)
+        .map(([language, url]) => `<link rel="alternate" hreflang="${language}" href="${url}">`);
+    if (route === 'index' && xDefaultUrl) alternateTags.push(`<link rel="alternate" hreflang="x-default" href="${xDefaultUrl}">`);
+    if (markdownUrl) alternateTags.push(`<link rel="alternate" type="text/markdown" href="${markdownUrl}">`);
+    const article = Boolean(metadata.source_sha256);
+    const openGraph = [
+        `<meta property="og:site_name" content="TALGATICUS">`,
+        `<meta property="og:title" content="${escapeHtml(metadata.title)}">`,
+        `<meta property="og:description" content="${escapeHtml(metadata.description)}">`,
+        `<meta property="og:url" content="${canonicalUrl}">`,
+        `<meta property="og:type" content="${article ? 'article' : 'website'}">`,
+    ];
+    if (metadata.author) openGraph.push(`<meta name="author" content="${escapeHtml(metadata.author)}">`);
+    const schema = article
+        ? {'@context': 'https://schema.org', '@type': 'Article', headline: metadata.title,
+            description: metadata.description, inLanguage: lang,
+            ...(metadata.author ? {author: {'@type': 'Person', name: metadata.author}} : {}),
+            mainEntityOfPage: {'@type': 'WebPage', '@id': canonicalUrl}}
+        : route === 'index' && !locale
+            ? {'@context': 'https://schema.org', '@type': 'WebSite', name: 'TALGATICUS / ТАЛГАТИКУС', url: canonicalUrl,
+                inLanguage: ['ru', 'en']}
+            : null;
+    if (schema) {
+        const json = JSON.stringify(schema).replaceAll('<', '\\u003c').replaceAll('&', '\\u0026')
+            .replaceAll('\u2028', '\\u2028').replaceAll('\u2029', '\\u2029');
+        openGraph.push(`<script type="application/ld+json">${json}</script>`);
+    }
+    html = html.replace('</head>', `    ${[...openGraph, ...alternateTags].join('\n    ')}\n</head>`);
+    const languageNav = Object.entries(alternateUrls)
+        .map(([language, url]) => `<a href="${url}" lang="${language}">${language.toUpperCase()}</a>`)
+        .join(' ');
+    if (languageNav) html = html.replace('</nav>', `    ${languageNav}\n</nav>`);
+    if (lang === 'ru') {
+        html = html.replace(/<aside class="publication-record"[\s\S]*?<\/aside>/, (block) => {
+            const labels = new Map([
+                ['Publication record', 'Сведения о публикации'], ['Author', 'Автор'],
+                ['Date in source record', 'Дата в записи источника'], ['Source version', 'Версия источника'],
+                ['Source', 'Источник'], ['License', 'Лицензия'],
+            ]);
+            for (const [english, russian] of labels) block = block.replaceAll(english, russian);
+            return block;
+        });
+    }
+    return html;
+};
+
 /**
  * @namespace Fl32_Cms_Back_Publication_Handler
  * @description Serves publications with explicit or header-selected representations.
@@ -163,16 +216,28 @@ export default class Fl32_Cms_Back_Publication_Handler {
                         allowedLocales: locales,
                         canonicalUrl: new URL(routing.getUrl({locale: renderLocale, route}), base).href,
                         alternateUrls,
+                        alternateLanguages: Object.entries(alternateUrls).map(([language, url]) => ({language, url})),
+                        xDefaultUrl: route === 'index' ? new URL(routing.getUrl({route: 'index'}), base).href : undefined,
                         markdownAlternateUrl: markdown ? new URL(routing.getMarkdownUrl({route}), base).href : undefined,
                     };
                     const result = await render.perform({...presentation, data, options: {}});
                     if (result.resultCode !== 'SUCCESS' || typeof result.content !== 'string') {
                         throw new Error(`Publication presentation failed: ${result.resultCode}`);
                     }
+                    const html = finishHtml({
+                        html: result.content,
+                        locale: renderLocale,
+                        route,
+                        alternateUrls,
+                        xDefaultUrl: route === 'index' ? new URL(routing.getUrl({route: 'index'}), base).href : undefined,
+                        markdownUrl: markdown ? new URL(routing.getMarkdownUrl({route}), base).href : undefined,
+                        canonicalUrl: new URL(routing.getUrl({locale: renderLocale, route}), base).href,
+                        metadata: item.metadata,
+                    });
                     respond.code200_Ok({
                         res,
                         headers: {...representationHeaders, 'content-type': 'text/html; charset=utf-8'},
-                        body: result.content,
+                        body: html,
                     });
                 }
                 context.completed = true;

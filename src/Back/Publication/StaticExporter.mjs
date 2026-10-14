@@ -2,6 +2,59 @@
 
 import {randomUUID} from 'node:crypto';
 
+/** @param {{html: string, locale: string|undefined, route: string, alternateUrls: Record<string, string>, xDefaultUrl: string|undefined, markdownUrl: string|undefined, canonicalUrl: string, metadata: Record<string, any>}} deps */
+const finishHtml = ({html, locale, route, alternateUrls, xDefaultUrl, markdownUrl, canonicalUrl, metadata}) => {
+    const lang = locale || 'en';
+    /** @param {unknown} value */
+    const escapeHtml = value => String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+    html = html.replace(/<html lang="[^"]*">/, `<html lang="${lang}">`);
+    html = html.replace(/\s*<link rel="alternate"[^>]*>/g, '');
+    const alternateTags = Object.entries(alternateUrls)
+        .map(([language, url]) => `<link rel="alternate" hreflang="${language}" href="${url}">`);
+    if (route === 'index' && xDefaultUrl) alternateTags.push(`<link rel="alternate" hreflang="x-default" href="${xDefaultUrl}">`);
+    if (markdownUrl) alternateTags.push(`<link rel="alternate" type="text/markdown" href="${markdownUrl}">`);
+    const article = Boolean(metadata.source_sha256);
+    const openGraph = [
+        `<meta property="og:site_name" content="TALGATICUS">`,
+        `<meta property="og:title" content="${escapeHtml(metadata.title)}">`,
+        `<meta property="og:description" content="${escapeHtml(metadata.description)}">`,
+        `<meta property="og:url" content="${canonicalUrl}">`,
+        `<meta property="og:type" content="${article ? 'article' : 'website'}">`,
+    ];
+    if (metadata.author) openGraph.push(`<meta name="author" content="${escapeHtml(metadata.author)}">`);
+    const schema = article
+        ? {'@context': 'https://schema.org', '@type': 'Article', headline: metadata.title,
+            description: metadata.description, inLanguage: lang,
+            ...(metadata.author ? {author: {'@type': 'Person', name: metadata.author}} : {}),
+            mainEntityOfPage: {'@type': 'WebPage', '@id': canonicalUrl}}
+        : route === 'index' && !locale
+            ? {'@context': 'https://schema.org', '@type': 'WebSite', name: 'TALGATICUS / ТАЛГАТИКУС', url: canonicalUrl,
+                inLanguage: ['ru', 'en']}
+            : null;
+    if (schema) {
+        const json = JSON.stringify(schema).replaceAll('<', '\\u003c').replaceAll('&', '\\u0026')
+            .replaceAll('\u2028', '\\u2028').replaceAll('\u2029', '\\u2029');
+        openGraph.push(`<script type="application/ld+json">${json}</script>`);
+    }
+    html = html.replace('</head>', `    ${[...openGraph, ...alternateTags].join('\n    ')}\n</head>`);
+    const languageNav = Object.entries(alternateUrls)
+        .map(([language, url]) => `<a href="${url}" lang="${language}">${language.toUpperCase()}</a>`)
+        .join(' ');
+    if (languageNav) html = html.replace('</nav>', `    ${languageNav}\n</nav>`);
+    if (lang === 'ru') {
+        html = html.replace(/<aside class="publication-record"[\s\S]*?<\/aside>/, (block) => {
+            const labels = new Map([
+                ['Publication record', 'Сведения о публикации'], ['Author', 'Автор'],
+                ['Date in source record', 'Дата в записи источника'], ['Source version', 'Версия источника'],
+                ['Source', 'Источник'], ['License', 'Лицензия'],
+            ]);
+            for (const [english, russian] of labels) block = block.replaceAll(english, russian);
+            return block;
+        });
+    }
+    return html;
+};
+
 /**
  * @namespace Fl32_Cms_Back_Publication_StaticExporter
  * @description Builds a finite static projection of the CMS publication catalog.
@@ -137,20 +190,17 @@ export default class StaticExporter {
                     throw new Error('A valid neutral home publication is required for static export.');
                 }
 
-                const byRoute = new Map();
-                for (const item of htmlItems) {
-                    const items = byRoute.get(item.route) ?? [];
-                    items.push(item);
-                    byRoute.set(item.route, items);
-                }
                 const results = [];
                 for (const item of htmlItems) {
                     const presentation = await catalog.getPresentation({item});
                     if (!presentation) continue;
                     /** @type {Record<string, string>} */
                     const alternateUrls = {};
-                    for (const alternate of byRoute.get(item.route) ?? []) {
-                        if (alternate.locale) alternateUrls[alternate.locale] = absoluteUrl(baseUrl, alternate.route, alternate.locale);
+                    for (const locale of locales) {
+                        const alternateFile = path.resolve(root, 'tmpl', 'web', locale, `${item.route}.md`);
+                        if (alternateFile.startsWith(`${root}${path.sep}`) && await fs.stat(alternateFile).then(stat => stat.isFile()).catch(() => false)) {
+                            alternateUrls[locale] = absoluteUrl(baseUrl, item.route, locale);
+                        }
                     }
                     const markdownUrl = routing.getMarkdownUrl({route: item.route, locale: item.locale || undefined});
                     const data = {
@@ -159,6 +209,8 @@ export default class StaticExporter {
                         allowedLocales: locales,
                         canonicalUrl: absoluteUrl(baseUrl, item.route, item.locale),
                         alternateUrls,
+                        alternateLanguages: Object.entries(alternateUrls).map(([language, url]) => ({language, url})),
+                        xDefaultUrl: item.route === 'index' ? absoluteUrl(baseUrl, 'index', '') : undefined,
                         markdownAlternateUrl: new URL(markdownUrl.replace(/^\/+/, ''), baseUrl).href,
                         siteBasePath,
                     };
@@ -166,8 +218,30 @@ export default class StaticExporter {
                     if (rendered.resultCode !== 'SUCCESS' || typeof rendered.content !== 'string') {
                         throw new Error(`Static publication render failed for ${item.locale || 'neutral'}:${item.route}.`);
                     }
+                    let html = rendered.content;
+                    const mermaidPattern = /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/;
+                    const mermaidMatch = mermaidPattern.exec(html);
+                    if (mermaidMatch) {
+                        const locale = item.locale === 'ru' || /[А-Яа-яЁё]/.test(mermaidMatch[1]) ? 'ru' : 'en';
+                        const label = locale === 'ru' ? 'Схема процесса обработки запроса' : 'Diagram of the request processing flow';
+                        const summary = locale === 'ru'
+                            ? 'Событие сохраняется в неизменяемом архиве, из которого собираются контекст и данные для чтения. Система проверяет бюджет, отправляет запрос модели, выполняет ограниченные чтения и сохраняет результат как новое событие.'
+                            : 'An event is saved in the immutable archive, which supplies the context and data for reads. The system checks the budget, sends the model request, performs bounded reads, and stores the result as a new event.';
+                        const diagram = `<figure class="publication-diagram"><img src="${siteBasePath}/assets/rcm-flow-${locale}.svg" alt="${label}"><figcaption>${summary}</figcaption></figure>`;
+                        html = html.replace(mermaidPattern, diagram);
+                    }
+                    html = finishHtml({
+                        html,
+                        locale: item.locale,
+                        route: item.route,
+                        alternateUrls,
+                        xDefaultUrl: item.route === 'index' ? absoluteUrl(baseUrl, 'index', '') : undefined,
+                        markdownUrl: new URL(markdownUrl.replace(/^\/+/, ''), baseUrl).href,
+                        canonicalUrl: absoluteUrl(baseUrl, item.route, item.locale),
+                        metadata: item.metadata,
+                    });
                     for (const name of htmlPaths(item.locale, item.route)) {
-                        await write(temporary, name, rendered.content);
+                        await write(temporary, name, html);
                         results.push(name);
                     }
                 }
@@ -194,6 +268,34 @@ export default class StaticExporter {
                 }
 
                 const files = await discovery.build({baseUrl, staticHtmlUrls: true});
+                const externalDiscoveryFile = path.resolve(root, 'discovery', 'external-pages.json');
+                let externalPages = [];
+                try {
+                    externalPages = JSON.parse(await fs.readFile(externalDiscoveryFile, 'utf8'));
+                } catch (error) {
+                    if (!(error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')) throw error;
+                }
+                if (!Array.isArray(externalPages)) throw new Error('External discovery pages must be an array.');
+                const externalEntries = externalPages.map(page => {
+                    if (!page || typeof page !== 'object' || typeof page.url !== 'string' ||
+                        typeof page.title !== 'string' || !['site', 'ru', 'en'].includes(page.language)) {
+                        throw new Error('Invalid external discovery page entry.');
+                    }
+                    const url = new URL(page.url, baseUrl);
+                    if (url.origin !== new URL(baseUrl).origin || !url.pathname.startsWith('/new-social-contract/') ||
+                        url.search || url.hash || !url.pathname.endsWith('/')) {
+                        throw new Error(`Unsafe external discovery URL: ${page.url}`);
+                    }
+                    return {url: url.href, title: page.title, language: page.language};
+                });
+                const sitemapLocs = new Set([...files.sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]));
+                const extraSitemap = externalEntries.filter(page => !sitemapLocs.has(page.url))
+                    .map(page => `  <url><loc>${page.url.replaceAll('&', '&amp;')}</loc></url>`);
+                files.sitemap = files.sitemap.replace('</urlset>', `${extraSitemap.join('\n')}${extraSitemap.length ? '\n' : ''}</urlset>`);
+                if (externalEntries.length) {
+                    files.llms = `${files.llms.trimEnd()}\n\n## NSK — текущие страницы на /new-social-contract/\n` +
+                        externalEntries.map(page => `- ${page.language === 'site' ? 'Site' : page.language.toUpperCase()} HTML: ${page.title} — ${page.url}`).join('\n') + '\n';
+                }
                 for (const name of ['robots.txt', 'llms.txt', 'sitemap.xml']) {
                     await write(temporary, name, files[name === 'robots.txt' ? 'robots' : name === 'llms.txt' ? 'llms' : 'sitemap']);
                     results.push(name);

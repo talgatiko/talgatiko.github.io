@@ -1,32 +1,34 @@
 ---
 title: "TALGATICUS / ТАЛГАТИКУС"
 description: "Публикации об информационной безопасности, ИТ и НСК · Publications on information security, IT, and the New Social Contract"
+description_ru: "Публикации об информационной безопасности, ИТ и НСК"
+description_en: "Publications on information security, IT, and the New Social Contract"
 date: "2026-10-09"
 ---
 
-# TALGATICUS / ТАЛГАТИКУС
+# TALGATICUS / <span lang="ru">ТАЛГАТИКУС</span>
 
-## Проекты / Projects
+## <span lang="ru">Проекты</span> / <span lang="en">Projects</span>
 
-- **Новый социальный контракт / New Social Contract** · [Действующий сайт / Current website](https://talgatiko.github.io/new-social-contract/)
-- **Проекты автора / Author's projects** · [Профиль и публичные репозитории / Profile and public repositories](https://github.com/talgatiko)
+- **<span lang="ru">Новый социальный контракт</span> / <span lang="en">New Social Contract</span>** · [<span lang="ru">Действующий сайт</span> / <span lang="en">Current website</span>](https://talgatiko.github.io/new-social-contract/)
+- **<span lang="ru">Проекты автора</span> / <span lang="en">Author's projects</span>** · [<span lang="ru">Профиль и публичные репозитории</span> / <span lang="en">Profile and public repositories</span>](https://github.com/talgatiko)
 
-## Публикации / Publications
+## <span lang="ru">Публикации</span> / <span lang="en">Publications</span>
 
-- **Информационная безопасность · RU**: [HTML](https://talgatiko.github.io/ru/security/) · [Markdown](https://talgatiko.github.io/ru/security.md)
-- **Information security · EN**: [HTML](https://talgatiko.github.io/en/security/) · [Markdown](https://talgatiko.github.io/en/security.md)
-- **Информационные технологии · RU**: [HTML](https://talgatiko.github.io/ru/it/) · [Markdown](https://talgatiko.github.io/ru/it.md)
-- **Information technology · EN**: [HTML](https://talgatiko.github.io/en/it/) · [Markdown](https://talgatiko.github.io/en/it.md)
+- **<span lang="ru">Информационная безопасность</span> · RU**: [HTML](https://talgatiko.github.io/ru/security/) · [Markdown](https://talgatiko.github.io/ru/security.md)
+- **<span lang="en">Information security</span> · EN**: [HTML](https://talgatiko.github.io/en/security/) · [Markdown](https://talgatiko.github.io/en/security.md)
+- **<span lang="ru">Информационные технологии</span> · RU**: [HTML](https://talgatiko.github.io/ru/it/) · [Markdown](https://talgatiko.github.io/ru/it.md)
+- **<span lang="en">Information technology</span> · EN**: [HTML](https://talgatiko.github.io/en/it/) · [Markdown](https://talgatiko.github.io/en/it.md)
 
-## Полная карта сайта / Complete site map
+## <span lang="ru">Полная карта сайта</span> / <span lang="en">Complete site map</span>
 
 - [Главная HTML / Home HTML](https://talgatiko.github.io/) · [Главная Markdown / Home Markdown](https://talgatiko.github.io/index.md)
 
-### Русский / Russian
+### <span lang="ru">Русский</span> / <span lang="en">Russian</span>
 
 - [HTML](https://talgatiko.github.io/ru/) · [Markdown](https://talgatiko.github.io/ru/index.md)
 
-#### Информационная безопасность
+#### <span lang="ru">Информационная безопасность</span>
 
 - [HTML](https://talgatiko.github.io/ru/security/) · [Markdown](https://talgatiko.github.io/ru/security.md)
 - [БДСМ-ИБ: безопасность, которая наказывает пользователя за чужую архитектуру](https://talgatiko.github.io/ru/security/ib-001/) · [Markdown](https://talgatiko.github.io/ru/security/ib-001.md)
@@ -35,17 +37,17 @@ date: "2026-10-09"
 - [Токен в репозитории: кто здесь не сделал свою работу](https://talgatiko.github.io/ru/security/ib-004/) · [Markdown](https://talgatiko.github.io/ru/security/ib-004.md)
 - [Башня на берегу: почему защищать сеть должен сотрудник?](https://talgatiko.github.io/ru/security/ib-005/) · [Markdown](https://talgatiko.github.io/ru/security/ib-005.md)
 
-#### Информационные технологии
+#### <span lang="ru">Информационные технологии</span>
 
 - [HTML](https://talgatiko.github.io/ru/it/) · [Markdown](https://talgatiko.github.io/ru/it.md)
 - [Интернет-иноды: одна копия файла для всех приложений](https://talgatiko.github.io/ru/it/intinode-v4/) · [Markdown](https://talgatiko.github.io/ru/it/intinode-v4.md)
 - [Обратимое селективное сжатие истории ИИ-чата](https://talgatiko.github.io/ru/it/reversible-context-memory/) · [Markdown](https://talgatiko.github.io/ru/it/reversible-context-memory.md)
 
-### English / Английский
+### <span lang="en">English</span> / <span lang="ru">Английский</span>
 
 - [HTML](https://talgatiko.github.io/en/) · [Markdown](https://talgatiko.github.io/en/index.md)
 
-#### Information security
+#### <span lang="en">Information security</span>
 
 - [HTML](https://talgatiko.github.io/en/security/) · [Markdown](https://talgatiko.github.io/en/security.md)
 - [BDSM-InfoSec: Security That Punishes Users for Someone Else’s Architecture](https://talgatiko.github.io/en/security/ib-001/) · [Markdown](https://talgatiko.github.io/en/security/ib-001.md)
@@ -54,13 +56,13 @@ date: "2026-10-09"
 - [A token in a repository: who failed to do their job?](https://talgatiko.github.io/en/security/ib-004/) · [Markdown](https://talgatiko.github.io/en/security/ib-004.md)
 - [The Tower on the Shore: why is securing the network the employee's job?](https://talgatiko.github.io/en/security/ib-005/) · [Markdown](https://talgatiko.github.io/en/security/ib-005.md)
 
-#### Information technology
+#### <span lang="en">Information technology</span>
 
 - [HTML](https://talgatiko.github.io/en/it/) · [Markdown](https://talgatiko.github.io/en/it.md)
 - [Internet Inodes: One Copy of a File for Every Application](https://talgatiko.github.io/en/it/intinode-v4/) · [Markdown](https://talgatiko.github.io/en/it/intinode-v4.md)
 - [Reversible Selective Compression of AI Chat History](https://talgatiko.github.io/en/it/reversible-context-memory/) · [Markdown](https://talgatiko.github.io/en/it/reversible-context-memory.md)
 
-### НСК · действующий отдельный сайт / Current NSK site
+### <span lang="ru">НСК · действующий отдельный сайт</span> / <span lang="en">Current NSK site</span>
 
 - [Главная НСК](https://talgatiko.github.io/new-social-contract/)
 - [Русская главная НСК](https://talgatiko.github.io/new-social-contract/ru/)
