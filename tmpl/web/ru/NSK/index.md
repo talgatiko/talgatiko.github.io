@@ -4,24 +4,21 @@ description: "Материалы специального проекта Нов�
 date: "2026-10-14"
 ---
 
-# Новый социальный контракт
+# Новый социальный контракт · НСК
 
-НСК — специальный проект ТАЛГАТИКУС о защищённой основе жизни и свободе дополнительного заработка. Здесь собраны утверждённые материалы проекта, их версии на русском и английском языках, а также HTML и Markdown представления.
-
-- [Каталог НСК](/NSK/ru/catalog/)
-- [Английская версия проекта](/NSK/en/)
-- [Главный сайт ТАЛГАТИКУС](/)
+RU: [HTML](https://talgatiko.github.io/NSK/ru/) · [Markdown](https://talgatiko.github.io/NSK/ru/index.md) · EN: [HTML](https://talgatiko.github.io/NSK/en/) · [Markdown](https://talgatiko.github.io/NSK/en/index.md)
 
 ## Материалы
 
-- [Паспорт концепции](/NSK/ru/texts/nsk-001/)
-- [НСК — кратко](/NSK/ru/texts/nsk-002/)
-- [Полная статья](/NSK/ru/texts/nsk-003/)
-- [Как проводится база](/NSK/ru/texts/nsk-005/)
-- [Условные примеры](/NSK/ru/texts/nsk-006/)
-- [Открытые вопросы](/NSK/ru/texts/nsk-007/)
-- [Источники](/NSK/ru/texts/nsk-008/)
-- [Об авторе](/NSK/ru/texts/nsk-009/)
-- [Оригинальная публикация LiveJournal 2010 года](/NSK/ru/texts/nsk-010/)
+- <span lang="ru">[Материалы НСК · ТАЛГАТИКУС](https://talgatiko.github.io/NSK/ru/catalog/)</span> · [Markdown](https://talgatiko.github.io/NSK/ru/catalog.md)
+- <span lang="ru">[Паспорт концепции](https://talgatiko.github.io/NSK/ru/texts/nsk-001/)</span> · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-001.md)
+- <span lang="ru">[НСК — кратко](https://talgatiko.github.io/NSK/ru/texts/nsk-002/)</span> · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-002.md)
+- <span lang="ru">[Полная статья](https://talgatiko.github.io/NSK/ru/texts/nsk-003/)</span> · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-003.md)
+- <span lang="ru">[Как проводится база](https://talgatiko.github.io/NSK/ru/texts/nsk-005/)</span> · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-005.md)
+- <span lang="ru">[Условные примеры](https://talgatiko.github.io/NSK/ru/texts/nsk-006/)</span> · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-006.md)
+- <span lang="ru">[Открытые вопросы](https://talgatiko.github.io/NSK/ru/texts/nsk-007/)</span> · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-007.md)
+- <span lang="ru">[Источники](https://talgatiko.github.io/NSK/ru/texts/nsk-008/)</span> · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-008.md)
+- <span lang="ru">[Об авторе](https://talgatiko.github.io/NSK/ru/texts/nsk-009/)</span> · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-009.md)
+- <span lang="ru">[Оригинальная публикация LiveJournal 2010 года](https://talgatiko.github.io/NSK/ru/texts/nsk-010/)</span> · [Markdown](https://talgatiko.github.io/NSK/ru/texts/nsk-010.md)
 
-В полной статье есть отдельный раздел [«Вопросы и ответы»](/NSK/ru/texts/nsk-003/#faq).
+- [NSK-004 · Вопросы и ответы внутри NSK-003](https://talgatiko.github.io/NSK/ru/texts/nsk-003/#faq)

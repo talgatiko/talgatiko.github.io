@@ -8,5 +8,7 @@ date: "2026-10-07"
 
 RU: [HTML](https://talgatiko.github.io/ru/it/) · [Markdown](https://talgatiko.github.io/ru/it.md) · EN: [HTML](https://talgatiko.github.io/en/it/) · [Markdown](https://talgatiko.github.io/en/it.md)
 
-- [Интернет-иноды: одна копия файла для всех приложений](https://talgatiko.github.io/ru/it/intinode-v4/) · [Markdown](https://talgatiko.github.io/ru/it/intinode-v4.md)
-- [Обратимое селективное сжатие истории ИИ-чата](https://talgatiko.github.io/ru/it/reversible-context-memory/) · [Markdown](https://talgatiko.github.io/ru/it/reversible-context-memory.md)
+## Материалы
+
+- <span lang="ru">[Интернет-иноды: одна копия файла для всех приложений](https://talgatiko.github.io/ru/it/intinode-v4/)</span> · [Markdown](https://talgatiko.github.io/ru/it/intinode-v4.md)
+- <span lang="ru">[Обратимое селективное сжатие истории ИИ-чата](https://talgatiko.github.io/ru/it/reversible-context-memory/)</span> · [Markdown](https://talgatiko.github.io/ru/it/reversible-context-memory.md)
