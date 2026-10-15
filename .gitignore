@@ -4,6 +4,7 @@
 /**/output*.zip
 /**/tmp/
 /dist/
+/design-preview/
 /incoming/
 /.cms-static-export-*/
 /.cms-static-export-backup-*/

@@ -15,7 +15,7 @@ export default class Export {
         this.lifetime = 'finite';
         /** @returns {Promise<void>} */
         this.execute = async () => {
-            await exporter.export();
+            await exporter.export({literary: true});
         };
     }
 }

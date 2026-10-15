@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="{{ humanLocale }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>{{ publication.metadata.title }}</title>
+    <meta name="description" content="{{ publication.metadata.description }}">
+    <link rel="canonical" href="{{ canonicalUrl }}">
+    <link rel="stylesheet" href="{{ siteBasePath }}/assets/editorial/site.css">
+    <script defer src="{{ siteBasePath }}/assets/editorial/page.js"></script>
+</head>
+<body class="{% if isHome %}home{% else %}page{% endif %}">
+<a class="skip" href="#reader">{% if humanLocale == 'en' %}Skip to content{% else %}К тексту{% endif %}</a>
+<header class="masthead">
+    <div class="edition-line"><span>TALGATICUS</span><span>{% if isNeutral %}Русский · English{% elif humanLocale == 'en' %}Essays and projects{% else %}Статьи и проекты{% endif %}</span></div>
+    <a class="wordmark" href="{{ homeUrl }}">{% if humanLocale == 'en' %}TALGATICUS{% else %}ТАЛГАТИКУС{% endif %}</a>
+    <nav aria-label="{% if humanLocale == 'en' %}Sections{% else %}Разделы{% endif %}">
+        {% for entry in navigation %}<a href="{{ entry.url }}"{% if entry.current %} aria-current="page"{% endif %}>{{ entry.label }}</a>{% endfor %}
+    </nav>
+    <div class="languages" aria-label="{% if humanLocale == 'en' %}Language{% else %}Язык{% endif %}">
+        {% for other in alternateLanguages %}<a href="{{ other.url }}" lang="{{ other.language }}" hreflang="{{ other.language }}"{% if other.language == locale %} aria-current="page"{% endif %}>{{ other.language | upper }}</a>{% endfor %}
+    </div>
+</header>
+<main id="reader" class="reader" aria-label="{% if humanLocale == 'en' %}Content{% else %}Текст{% endif %}">
+<textarea id="markdown-source" readonly aria-label="{{ sourceLabel }}">{{ embeddedMarkdown }}</textarea>
+</main>
+<section class="reading-end">
+    <details id="source-details"><summary>{{ sourceLabel }}</summary></details>
+    {% if publication.metadata.source or publication.metadata.source_sha256 %}<details class="publication-record">
+        <summary>{% if humanLocale == 'en' %}Publication record{% else %}Сведения о публикации{% endif %}</summary>
+        <dl>
+            {% if publication.metadata.author %}<dt>{% if humanLocale == 'en' %}Author{% else %}Автор{% endif %}</dt><dd>{{ publication.metadata.author }}</dd>{% endif %}
+            {% if publication.metadata.date %}<dt>{% if humanLocale == 'en' %}Date in source record{% else %}Дата в записи источника{% endif %}</dt><dd>{{ publication.metadata.date }}</dd>{% endif %}
+            {% if publication.metadata.source %}<dt>{% if humanLocale == 'en' %}Source{% else %}Источник{% endif %}</dt><dd><a href="{{ publication.metadata.source }}">{{ publication.metadata.source }}</a></dd>{% endif %}
+            {% if publication.metadata.source_sha256 %}<dt>SHA-256</dt><dd><code>{{ publication.metadata.source_sha256 }}</code></dd>{% endif %}
+            {% if publication.metadata.license %}<dt>{% if humanLocale == 'en' %}License{% else %}Лицензия{% endif %}</dt><dd>{{ publication.metadata.license }}</dd>{% endif %}
+        </dl>
+    </details>{% endif %}
+</section>
+<footer class="site-map">
+    <div class="footer-label">{{ mapLabel }}</div>
+    <div class="map-columns">{% for group in siteMap %}<section><h2><a href="{{ group.url }}">{{ group.label }}</a></h2><ul>{% for entry in group.pages %}<li><a href="{{ entry.url }}">{{ entry.title }}</a></li>{% endfor %}</ul></section>{% endfor %}</div>
+    <div class="footer-bottom"><span>TALGATICUS / ТАЛГАТИКУС</span><a href="https://github.com/talgatiko">GitHub</a></div>
+</footer>
+</body>
+</html>

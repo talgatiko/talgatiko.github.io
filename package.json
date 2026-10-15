@@ -42,6 +42,8 @@
     "types.d.ts"
   ],
   "scripts": {
+    "export:design": "node --experimental-loader ./scripts/windows-drive-loader.mjs ./node_modules/@teqfw/cli/bin/teq.mjs cms:export-design",
+    "preview:design": "node scripts/preview-design.mjs",
     "start": "teq web:start",
     "help": "teq help",
     "export:static": "node --experimental-loader ./scripts/windows-drive-loader.mjs ./node_modules/@teqfw/cli/bin/teq.mjs cms:export",
@@ -89,6 +91,11 @@
         },
         "plugin": "Fl32_Cms_Back_Cli_Plugin$",
         "commands": [
+          {
+            "id": "cms:export-design",
+            "summary": "Build the local editorial design preview.",
+            "component": "Fl32_Cms_Back_Cli_Command_ExportDesign$"
+          },
           {
             "id": "cms:generate",
             "summary": "Generate robots.txt, llms.txt, and sitemap.xml.",

@@ -105,7 +105,7 @@ test('invalid article and missing FAQ stop generation before any index write', a
     }
 });
 
-test('temporary export resolves every internal path and all generated anchors; authored anchor defects stay unchanged', async t => {
+test('temporary literary export resolves internal paths, preserves sources and repairs the known anchor', async t => {
     const root = await fixture(t);
     const originals = await snapshot(root);
     const originalHtml = new Map();
@@ -122,7 +122,7 @@ test('temporary export resolves every internal path and all generated anchors; a
         const target = originalHtml.get(url.pathname);
         if (!target.includes(`id="${anchor}"`) && !target.includes(`id='${anchor}'`)) existingMissingAnchors.add(url.href);
     }
-    for (const name of ['src', 'bootstrap', 'scripts', 'web', 'discovery', 'package.json']) {
+    for (const name of ['src', 'bootstrap', 'scripts', 'web', 'design', 'discovery', 'package.json']) {
         await fs.cp(path.join(repo, name), path.join(root, name), {recursive: true});
     }
     try {
@@ -153,7 +153,8 @@ test('temporary export resolves every internal path and all generated anchors; a
             const file = path.join(dir, entry.name);
             if (entry.isDirectory()) await check(file);
             else if (entry.name.endsWith('.html')) {
-                const text = await fs.readFile(file, 'utf8');
+                const raw = await fs.readFile(file, 'utf8');
+                const text = raw.replace(/<textarea[^>]*>([\s\S]*?)<\/textarea>/, (_, md) => marked.parse(md.replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&amp;', '&')));
                 const page = 'https://talgatiko.github.io/' + path.relative(dist, file).replaceAll(path.sep, '/');
                 for (const match of text.matchAll(/(?:href|src)="([^"]+)"/g)) {
                     const url = new URL(match[1].replaceAll('&amp;', '&'), page);
@@ -178,10 +179,10 @@ test('temporary export resolves every internal path and all generated anchors; a
         }
     }
     await check(dist);
-    assert.deepEqual(observedMissingAnchors, existingMissingAnchors);
+    assert.equal(observedMissingAnchors.size, 0);
     const sitemap = await fs.readFile(path.join(dist, 'sitemap.xml'), 'utf8');
     const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]);
-    assert.equal(new Set(urls).size, 86);
+    assert.equal(new Set(urls).size, 45);
     assert.doesNotMatch(sitemap, /new-social-contract/);
     const llms = await fs.readFile(path.join(dist, 'llms.txt'), 'utf8');
     for (const url of urls) {

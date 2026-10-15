@@ -1,10 +1,11 @@
 // @ts-check
 
 import {randomUUID} from 'node:crypto';
+import {editorialItems, editorialData} from './Editorial.mjs';
 
-/** @param {{html: string, locale: string|undefined, route: string, alternateUrls: Record<string, string>, xDefaultUrl: string|undefined, markdownUrl: string|undefined, canonicalUrl: string, metadata: Record<string, any>}} deps */
-const finishHtml = ({html, locale, route, alternateUrls, xDefaultUrl, markdownUrl, canonicalUrl, metadata}) => {
-    const lang = locale || 'en';
+/** @param {{html: string, locale: string|undefined, route: string, alternateUrls: Record<string, string>, xDefaultUrl: string|undefined, markdownUrl: string|undefined, canonicalUrl: string, metadata: Record<string, any>, designPreview?: boolean}} deps */
+const finishHtml = ({html, locale, route, alternateUrls, xDefaultUrl, markdownUrl, canonicalUrl, metadata, designPreview = false}) => {
+    const lang = locale || (designPreview ? 'ru' : 'en');
     /** @param {unknown} value */
     const escapeHtml = value => String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
     html = html.replace(/<html lang="[^"]*">/, `<html lang="${lang}">`);
@@ -40,7 +41,7 @@ const finishHtml = ({html, locale, route, alternateUrls, xDefaultUrl, markdownUr
     const languageNav = Object.entries(alternateUrls)
         .map(([language, url]) => `<a href="${url}" lang="${language}">${language.toUpperCase()}</a>`)
         .join(' ');
-    if (languageNav) html = html.replace('</nav>', `    ${languageNav}\n</nav>`);
+    if (languageNav && !designPreview) html = html.replace('</nav>', `    ${languageNav}\n</nav>`);
     if (lang === 'ru') {
         html = html.replace(/<aside class="publication-record"[\s\S]*?<\/aside>/, (block) => {
             const labels = new Map([
@@ -161,10 +162,11 @@ export default class StaticExporter {
          * Build in a fresh directory and replace dist only after every output succeeds.
          * @returns {Promise<string[]>}
          */
-        this.export = async () => {
+        this.export = async ({designPreview = false, literary = false} = {}) => {
+            const editorial = designPreview || literary;
             const baseUrl = getBaseUrl();
             const siteBasePath = new URL(baseUrl).pathname.replace(/\/+$/, '');
-            const dist = path.resolve(root, 'dist');
+            const dist = path.resolve(root, designPreview ? 'design-preview' : 'dist');
             if (!dist.startsWith(`${root}${path.sep}`)) throw new Error('Static export destination escapes the application root.');
             try {
                 const existing = await fs.lstat(dist);
@@ -179,6 +181,7 @@ export default class StaticExporter {
             let movedExisting = false;
             try {
                 await copyPublicTree(path.join(root, 'web'), temporary);
+                if (editorial) await copyPublicTree(path.join(root, 'design/editorial/assets'), path.join(temporary, 'assets/editorial'));
                 const locales = tmplConfig.getAvailableLocales();
                 /** @type {Fl32_Cms_Back_Publication_Item[]} */
                 const markdownItems = [];
@@ -187,23 +190,28 @@ export default class StaticExporter {
                 }
 
                 /** @type {Fl32_Cms_Back_Publication_Item[]} */
-                const htmlItems = [];
+                let htmlItems = [];
                 for (const locale of [...(routing.isSite() ? [''] : []), ...locales]) {
                     htmlItems.push(...await catalog.listHtml({locale}));
                 }
                 if (!htmlItems.some(item => item.locale === '' && item.route === 'index')) {
                     throw new Error('A valid neutral home publication is required for static export.');
                 }
+                if (editorial) htmlItems = editorialItems(htmlItems, routing, baseUrl);
 
                 const results = [];
+                /** @type {Record<string, any>} */
+                const pageSettings = {};
                 for (const item of htmlItems) {
                     const presentation = await catalog.getPresentation({item});
                     if (!presentation) continue;
+                    if (editorial) presentation.template = await fs.readFile(path.join(root, 'design/editorial/publication.html'), 'utf8');
                     /** @type {Record<string, string>} */
                     const alternateUrls = {};
                     for (const locale of locales) {
                         const alternateFile = path.resolve(root, 'tmpl', 'web', locale, `${item.route}.md`);
-                        if (alternateFile.startsWith(`${root}${path.sep}`) && await fs.stat(alternateFile).then(stat => stat.isFile()).catch(() => false)) {
+                        if (editorial ? htmlItems.some(other => other.locale === locale && other.route === item.route) :
+                            alternateFile.startsWith(`${root}${path.sep}`) && await fs.stat(alternateFile).then(stat => stat.isFile()).catch(() => false)) {
                             alternateUrls[locale] = absoluteUrl(baseUrl, item.route, locale);
                         }
                     }
@@ -214,10 +222,11 @@ export default class StaticExporter {
                         allowedLocales: locales,
                         canonicalUrl: absoluteUrl(baseUrl, item.route, item.locale),
                         alternateUrls,
-                        alternateLanguages: Object.entries(alternateUrls).map(([language, url]) => ({language, url})),
+                        alternateLanguages: Object.entries(alternateUrls).map(([language, url]) => ({language, url: editorial ? new URL(url).pathname : url})),
                         xDefaultUrl: item.route === 'index' ? absoluteUrl(baseUrl, 'index', '') : undefined,
-                        markdownAlternateUrl: new URL(markdownUrl.replace(/^\/+/, ''), baseUrl).href,
+                        markdownAlternateUrl: editorial ? undefined : new URL(markdownUrl.replace(/^\/+/, ''), baseUrl).href,
                         siteBasePath,
+                        ...(editorial ? editorialData(item, htmlItems, routing, baseUrl) : {}),
                     };
                     const rendered = await render.perform({...presentation, data, options: {}});
                     if (rendered.resultCode !== 'SUCCESS' || typeof rendered.content !== 'string') {
@@ -226,7 +235,7 @@ export default class StaticExporter {
                     let html = rendered.content;
                     const mermaidPattern = /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/;
                     const mermaidMatch = mermaidPattern.exec(html);
-                    if (mermaidMatch) {
+                    if (mermaidMatch && !editorial) {
                         const locale = item.locale === 'ru' || /[А-Яа-яЁё]/.test(mermaidMatch[1]) ? 'ru' : 'en';
                         const label = locale === 'ru' ? 'Схема процесса обработки запроса' : 'Diagram of the request processing flow';
                         const summary = locale === 'ru'
@@ -241,16 +250,33 @@ export default class StaticExporter {
                         route: item.route,
                         alternateUrls,
                         xDefaultUrl: item.route === 'index' ? absoluteUrl(baseUrl, 'index', '') : undefined,
-                        markdownUrl: new URL(markdownUrl.replace(/^\/+/, ''), baseUrl).href,
+                        markdownUrl: editorial ? undefined : new URL(markdownUrl.replace(/^\/+/, ''), baseUrl).href,
                         canonicalUrl: absoluteUrl(baseUrl, item.route, item.locale),
                         metadata: item.metadata,
+                        designPreview: editorial,
                     });
-                    for (const name of htmlPaths(item.locale, item.route)) {
-                        await write(temporary, name, html);
+                    if (editorial) {
+                        const settings = editorialData(item, htmlItems, routing, baseUrl);
+                        const {embeddedMarkdown, ...chrome} = settings;
+                        pageSettings[new URL(data.canonicalUrl).pathname] = {...chrome,
+                            metadata: item.metadata, canonicalUrl: data.canonicalUrl,
+                            alternateLanguages: data.alternateLanguages};
+                        /** @param {string} value */
+                        const escape = value => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+                        html = `<!doctype html><meta charset="utf-8"><script src="${siteBasePath}/assets/editorial/page.js" defer></script><textarea id="markdown-source">\n${escape(embeddedMarkdown)}\n</textarea>\n`;
+                    }
+                    const outputPaths = htmlPaths(item.locale, item.route);
+                    for (const [index, name] of (designPreview ? outputPaths.slice(0, 1) : outputPaths).entries()) {
+                        const redirect = editorial && index > 0;
+                        const destination = new URL(data.canonicalUrl).pathname;
+                        const redirectHtml = `<!doctype html><meta charset="utf-8"><link rel="canonical" href="${data.canonicalUrl}"><script src="${siteBasePath}/assets/editorial/redirect.js" data-target="${destination}"></script><meta http-equiv="refresh" content="0;url=${destination}"><a href="${destination}">Continue</a>`;
+                        await write(temporary, name, redirect ? redirectHtml : html);
                         results.push(name);
                     }
                 }
 
+                if (editorial) await write(temporary, 'assets/editorial/pages.json', JSON.stringify(pageSettings));
+                if (!editorial) {
                 const neutralByRoute = new Map();
                 for (const route of [...new Set(markdownItems.map(item => item.route))]) {
                     neutralByRoute.set(route, await source.readNeutral({route}));
@@ -271,8 +297,16 @@ export default class StaticExporter {
                     await write(temporary, name, neutral.source);
                     results.push(name);
                 }
+                }
 
                 const files = await discovery.build({baseUrl, staticHtmlUrls: true});
+                if (editorial) {
+                    const publicPages = htmlItems.filter(item => item.metadata.indexable !== false).map(item => ({item, url: absoluteUrl(baseUrl, item.route, item.locale)}));
+                    files.sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+                        publicPages.map(page => `  <url><loc>${page.url.replaceAll('&', '&amp;')}</loc></url>`).join('\n') + '\n</urlset>\n';
+                    files.llms = '# TALGATICUS / ТАЛГАТИКУС\n\nOne HTML URL per language. Decode the value of textarea#markdown-source to extract the authored Markdown without executing JavaScript.\n\n' +
+                        publicPages.map(page => `- ${page.item.metadata.title} — ${page.url}`).join('\n') + '\n';
+                }
                 const externalDiscoveryFile = path.resolve(root, 'discovery', 'external-pages.json');
                 let externalPages = [];
                 try {

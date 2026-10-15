@@ -1,0 +1,68 @@
+{
+  "registry": "https://registry.npmjs.org",
+  "packages": [
+    {
+      "name": "texme",
+      "version": "1.2.2",
+      "source": "https://github.com/susam/texme",
+      "metadata": "https://registry.npmjs.org/texme/1.2.2",
+      "tarball": "https://registry.npmjs.org/texme/-/texme-1.2.2.tgz",
+      "npmIntegrity": "sha512-xDrpRXePzeNR3a6mtuaXYKOkj26qQJDNhmh5nWD+OBA5EXMwnmPx1hf9eo1F69Rd/J8U5OipTOt5K8v/yWSerQ==",
+      "license": "MIT",
+      "files": [
+        {
+          "file": "texme.js",
+          "sha256": "303393f81d38e253aa0b438c0d24a6a7bed0c80dd63aa8a2987194b6a1bd6f23",
+          "bytes": 4059
+        },
+        {
+          "file": "texme-0-LICENSE.md",
+          "sha256": "51295f39473ea4eaaf371adbf4e712c049bd3f7ede77c41c145ab3840fdba6f4",
+          "bytes": 1103
+        }
+      ]
+    },
+    {
+      "name": "marked",
+      "version": "18.1.1",
+      "source": "https://github.com/markedjs/marked",
+      "metadata": "https://registry.npmjs.org/marked/18.1.1",
+      "tarball": "https://registry.npmjs.org/marked/-/marked-18.1.1.tgz",
+      "npmIntegrity": "sha512-zEGgrtUG8crk+TrMacJSVABU4DYDDkS8uqgU3ohrn/2fW9C2AEfUrO3m6IhpIpQpl7YcVpiXXC9cSMWDANT3dg==",
+      "license": "MIT",
+      "files": [
+        {
+          "file": "marked.js",
+          "sha256": "b82b9334406d8bdd16b6236c08de1cb65b2a859873ca9503d9cc0b292ca3c12a",
+          "bytes": 47956
+        },
+        {
+          "file": "marked-0-LICENSE",
+          "sha256": "8e3a3f82f59a60958f56ca08f445647c32a4733dc7ca6c2c46f6eb898471ab9c",
+          "bytes": 2942
+        }
+      ]
+    },
+    {
+      "name": "mermaid",
+      "version": "12.2.0",
+      "source": "https://github.com/mermaid-js/mermaid",
+      "metadata": "https://registry.npmjs.org/mermaid/12.2.0",
+      "tarball": "https://registry.npmjs.org/mermaid/-/mermaid-12.2.0.tgz",
+      "npmIntegrity": "sha512-w7nr/SFrLO7BaVTs3dQTvYSV6nYSBj0Yy9DjBhsIJtAcHqRzXSq4Pg32ujHZ/AdWsAMNEvvhbm5dt9E2tOiHzw==",
+      "license": "MIT",
+      "files": [
+        {
+          "file": "mermaid.js",
+          "sha256": "a8a6a6f805b074a8261a2825c86f99c8054acb3b35f50bb7e24a4f9f2c3c3b9f",
+          "bytes": 5494801
+        },
+        {
+          "file": "mermaid-0-LICENSE",
+          "sha256": "ec9fb67dcb25eccc416ed56e1aab819222c805a2a4bfe4cb19e7556bf2ffde80",
+          "bytes": 1089
+        }
+      ]
+    }
+  ]
+}
