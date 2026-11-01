@@ -1,6 +1,6 @@
 // @ts-check
 
-import {randomUUID} from 'node:crypto';
+import {randomUUID, createHash} from 'node:crypto';
 import {editorialItems, editorialData} from './Editorial.mjs';
 
 /** @param {{html: string, locale: string|undefined, route: string, alternateUrls: Record<string, string>, xDefaultUrl: string|undefined, markdownUrl: string|undefined, canonicalUrl: string, metadata: Record<string, any>, designPreview?: boolean}} deps */
@@ -166,6 +166,9 @@ export default class StaticExporter {
             const editorial = designPreview || literary;
             const baseUrl = getBaseUrl();
             const siteBasePath = new URL(baseUrl).pathname.replace(/\/+$/, '');
+            const assetRevision = editorial ? createHash('sha256').update(Buffer.concat(await Promise.all(
+                ['page.js', 'chrome.js', 'site.css'].map(name => fs.readFile(path.join(root, 'design/editorial/assets', name)))
+            ))).digest('hex').slice(0, 12) : '';
             const dist = path.resolve(root, designPreview ? 'design-preview' : 'dist');
             if (!dist.startsWith(`${root}${path.sep}`)) throw new Error('Static export destination escapes the application root.');
             try {
@@ -263,7 +266,7 @@ export default class StaticExporter {
                             alternateLanguages: data.alternateLanguages};
                         /** @param {string} value */
                         const escape = value => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-                        html = `<!doctype html><meta charset="utf-8"><script src="${siteBasePath}/assets/editorial/page.js" defer></script><textarea id="markdown-source">\n${escape(embeddedMarkdown)}\n</textarea>\n`;
+                        html = `<!doctype html><meta charset="utf-8"><script src="${siteBasePath}/assets/editorial/page.js?v=${assetRevision}" defer></script><textarea id="markdown-source">\n${escape(embeddedMarkdown)}\n</textarea>\n`;
                     }
                     const outputPaths = htmlPaths(item.locale, item.route);
                     for (const [index, name] of (designPreview ? outputPaths.slice(0, 1) : outputPaths).entries()) {

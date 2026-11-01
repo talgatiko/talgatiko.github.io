@@ -1,13 +1,14 @@
 /* Trusted author content. Local TeXMe, Marked and Mermaid; no external requests. */
 (async () => {
     const assets = new URL('.', document.currentScript.src);
+    const revision = new URL(document.currentScript.src).search;
     const input = document.getElementById('markdown-source');
     if (!input) return;
     if (!document.getElementById('reader')) {
-        const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = new URL('site.css', assets).href; document.head.append(css);
+        const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = new URL('site.css', assets).href + revision; document.head.append(css);
         try {
             await new Promise((resolve, reject) => {
-                const script = document.createElement('script'); script.src = new URL('chrome.js', assets).href;
+                const script = document.createElement('script'); script.src = new URL('chrome.js', assets).href + revision;
                 script.onload = resolve; script.onerror = reject; document.head.append(script);
             });
             await window.talgaticusChrome(assets, input);

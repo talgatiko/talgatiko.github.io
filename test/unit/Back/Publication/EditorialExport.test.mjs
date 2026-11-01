@@ -55,7 +55,7 @@ test('editorial preview uses the CMS corpus, embeds Markdown and preserves the c
     assert(!files.some(file => file.endsWith('.md')));
     const home = await fs.readFile(path.join(root, 'design-preview/index.html'), 'utf8');
     assert.match(home, /textarea id="markdown-source"/);
-    assert.match(home.split('\n')[0], /^<!doctype html><meta charset="utf-8"><script src="\/site\/assets\/editorial\/page.js" defer><\/script><textarea id="markdown-source">$/);
+    assert.match(home.split('\n')[0], /^<!doctype html><meta charset="utf-8"><script src="\/site\/assets\/editorial\/page.js\?v=[a-f0-9]{12}" defer><\/script><textarea id="markdown-source">$/);
     assert(!home.includes('<main'));
     assert(!home.includes('Разные пароли'));
     assert.match(home, /Пока нет записей/);
